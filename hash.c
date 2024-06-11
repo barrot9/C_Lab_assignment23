@@ -11,13 +11,13 @@ typedef struct Node {
     struct Node *next;
 } Node;
 
-/* HashTableEntry structure to store the head of the linked list for each number */
+/* HashTableHead structure to store the head of the linked list for each number */
 typedef struct {
     Node *head;
-} HashTableEntry;
+} HashTableHead;
 
 /* Hash table with an entry for each number from 0 to MAX_NUMBER */
-HashTableEntry hashTable[MAX_NUMBER + 1];
+HashTableHead hashTable[MAX_NUMBER + 1];
 
 /* Function to initialize the hash table */
 void initializeHashTable() {
