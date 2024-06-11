@@ -4,24 +4,29 @@
 
 #define MAX_NUMBER 28
 
+/* Node structure to store filename and count of occurrences */
 typedef struct Node {
     char *filename;
     int count;
     struct Node *next;
 } Node;
 
+/* HashTableEntry structure to store the head of the linked list for each number */
 typedef struct {
     Node *head;
 } HashTableEntry;
 
+/* Hash table with an entry for each number from 0 to MAX_NUMBER */
 HashTableEntry hashTable[MAX_NUMBER + 1];
 
+/* Function to initialize the hash table */
 void initializeHashTable() {
     for (int i = 0; i <= MAX_NUMBER; ++i) {
         hashTable[i].head = NULL;
     }
 }
 
+/* Function to create a new node with the given filename */
 Node* createNode(const char *filename) {
     Node *newNode = (Node *)malloc(sizeof(Node));
     newNode->filename = strdup(filename);
@@ -30,10 +35,12 @@ Node* createNode(const char *filename) {
     return newNode;
 }
 
+/* Function to insert a new node or update the count of an existing node */
 void insertOrUpdate(const char *filename, int number) {
     Node *current = hashTable[number].head;
     Node *previous = NULL;
 
+    /* Traverse the linked list to find the filename or the end of the list */
     while (current != NULL) {
         if (strcmp(current->filename, filename) == 0) {
             current->count++;
@@ -43,6 +50,7 @@ void insertOrUpdate(const char *filename, int number) {
         current = current->next;
     }
 
+    /* Create a new node if the filename was not found */
     Node *newNode = createNode(filename);
     if (previous == NULL) {
         hashTable[number].head = newNode;
@@ -51,6 +59,7 @@ void insertOrUpdate(const char *filename, int number) {
     }
 }
 
+/* Function to process a file and update the hash table */
 void processFile(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -59,6 +68,7 @@ void processFile(const char *filename) {
     }
 
     int number;
+    /* Read numbers from the file and update the hash table */
     while (fscanf(file, "%d", &number) == 1) {
         if (number >= 0 && number <= MAX_NUMBER) {
             insertOrUpdate(filename, number);
@@ -68,6 +78,7 @@ void processFile(const char *filename) {
     fclose(file);
 }
 
+/* Function to print the summary of number occurrences in files */
 void printSummary() {
     for (int i = 0; i <= MAX_NUMBER; ++i) {
         Node *current = hashTable[i].head;
@@ -85,6 +96,7 @@ void printSummary() {
     }
 }
 
+/* Function to free the memory allocated for the hash table */
 void freeHashTable() {
     for (int i = 0; i <= MAX_NUMBER; ++i) {
         Node *current = hashTable[i].head;
@@ -105,6 +117,7 @@ int main(int argc, char *argv[]) {
 
     initializeHashTable();
 
+    /* Process each file provided as command line arguments */
     for (int i = 1; i < argc; ++i) {
         processFile(argv[i]);
     }
